@@ -1,0 +1,12 @@
+{
+  "name": "GPU Usage Monitor",
+  "description": "Shows NVIDIA GPU usage in the top bar",
+  "uuid": "gpu-usage-monitor@bibhu",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49"
+  ]
+}
