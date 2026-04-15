@@ -2,12 +2,17 @@ import St from 'gi://St';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import Extension from 'resource:///org/gnome/shell/extensions/extension.js';
-import * as Main from 'resource:///org/gnome/shell/ui/main';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelmenu.js';
 
 export default class GPUUsageMonitor extends Extension {
     enable() {
         this._label = null;
+        this._indicator = null;
         this._timerId = null;
+
+        // Create the indicator button required by addToStatusArea
+        this._indicator = new PanelMenu.Button(0, 'gpu-usage-monitor');
 
         // Create the label for the top bar
         this._label = new St.Label({
@@ -15,8 +20,11 @@ export default class GPUUsageMonitor extends Extension {
             style_class: 'panel-button'
         });
 
-        // Add the label to the GNOME Shell status area
-        Main.panel.addToStatusArea('gpu-usage-monitor', this._label);
+        // Add the label to the button
+        this._indicator.add_child(this._label);
+
+        // Add the indicator button to the GNOME Shell status area
+        Main.panel.addToStatusArea('gpu-usage-monitor', this._indicator);
 
         // Initial update
         this._updateUsage();
@@ -35,11 +43,13 @@ export default class GPUUsageMonitor extends Extension {
             this._timerId = null;
         }
         
-        // Remove the label from the top bar
-        if (this._label) {
-            this._label.destroy();
-            this._label = null;
+        // Remove the indicator from the top bar
+        if (this._indicator) {
+            this._indicator.destroy();
+            this._indicator = null;
         }
+        
+        this._label = null;
     }
 
     /**
